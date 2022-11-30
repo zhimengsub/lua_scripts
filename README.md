@@ -1,2 +1,4 @@
 # lua_scripts
 组内用于Aegisub的实用lua脚本
+
+具体说明暂见Aegisub内状态栏提示
