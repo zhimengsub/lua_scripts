@@ -3,7 +3,7 @@ local tr = aegisub.gettext
 script_name = tr("规范换行空格 (选中行)")
 script_description = tr("检查选中行的换行符是否规范，如果不规范则设为注释，否则\\N后的空格全部换为全角，前面的空格全部换为半角")
 script_author = "谢耳朵w"
-script_version = "0.3"
+script_version = "0.4"
 
 re = require 'aegisub.re'
 
@@ -45,6 +45,7 @@ end
 
 function process_lines_selected(subtitles, selected_lines, active_line)
     sels = {}
+    errsels = {}
     local i_dialogue = 1
 	for _, i in ipairs(selected_lines) do
 		aegisub.progress.set(i * 100 / #selected_lines)
@@ -53,7 +54,7 @@ function process_lines_selected(subtitles, selected_lines, active_line)
             if not is_single_newline(l.text) then
                 l.comment = true
                 subtitles[i] = l
-                table.insert(sels, i)
+                table.insert(errsels, i)
                 aegisub.debug.out(string.format('Line %d format error! "%s"\n\n', i, l.text))
             else
                 nt = replace_space(l.text)
@@ -69,6 +70,10 @@ function process_lines_selected(subtitles, selected_lines, active_line)
         end
 	end
 	aegisub.set_undo_point(script_name)
+    if #errsels > 0 then
+        aegisub.debug.out('These lines will be selected and commented out!')
+        return errsels
+    end
     return sels
 end
 
