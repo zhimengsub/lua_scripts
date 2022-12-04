@@ -3,7 +3,7 @@ local tr = aegisub.gettext
 script_name = tr("规范换行空格 (选中行)")
 script_description = tr("检查选中行的换行符是否规范，如果不规范则设为注释，否则\\N后的空格全部换为全角，前面的空格全部换为半角")
 script_author = "谢耳朵w"
-script_version = "0.4"
+script_version = "0.5"
 
 re = require 'aegisub.re'
 
@@ -13,6 +13,18 @@ exp_zhsp = re.compile("　(?=.*\\\\N)")
 exp_fn = re.compile("\\{\\\\fnSource Han Sans JP Bold.*\\}")
 exp_sp1 = re.compile("　+")
 exp_sp2 = re.compile(" +")
+
+function linenum_offset(subs)
+    offset = 0
+    for i = 1, #subs do
+        if subs[i].class ~= "dialogue" then
+            offset = i
+        else
+            break
+        end
+    end
+    return offset
+end
 
 function remove_seq_space(text)
     text = replace_until_same(text, exp_sp1, '　')
@@ -44,6 +56,7 @@ function is_single_newline(text)
 end
 
 function process_lines_selected(subtitles, selected_lines, active_line)
+    offset = linenum_offset(subtitles)
     sels = {}
     errsels = {}
     local i_dialogue = 1
@@ -55,7 +68,7 @@ function process_lines_selected(subtitles, selected_lines, active_line)
                 l.comment = true
                 subtitles[i] = l
                 table.insert(errsels, i)
-                aegisub.debug.out(string.format('Line %d format error! "%s"\n\n', i, l.text))
+                aegisub.debug.out(string.format('Line %d format error! "%s"\n\n', i-offset, l.text))
             else
                 nt = replace_space(l.text)
                 nt = remove_seq_space(nt)
