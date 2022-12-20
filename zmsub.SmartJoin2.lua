@@ -1,6 +1,6 @@
 local tr = aegisub.gettext
 
-script_name = tr("智能合并对话 (无空格)")
+script_name = tr("智能合并对话 (含空格)")
 script_description = tr("合并多行时，按\\N区分，把中文和日文分别合并至各自部分")
 script_author = "谢耳朵w"
 script_version = "0.2"
@@ -16,9 +16,9 @@ function smartjoinlines(subs, sels)
 	for _, i in ipairs(sels) do
         if subs[i].class == "dialogue" then
             res = pat:match(subs[i].text)
-            zhs = zhs .. res[2]['str']
+            zhs = zhs .. ' ' .. res[2]['str']
             mid = res[3]['str']
-            jps = jps .. res[4]['str']
+            jps = jps .. ' ' .. res[4]['str']
             table.insert(rm, i)
         end
 	end
