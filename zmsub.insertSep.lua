@@ -3,11 +3,13 @@ local tr = aegisub.gettext
 script_name = tr"插入日字特效 (选中行)"
 script_description = tr"把台词中的\\N替换为\\N{\\fnSource Han Sans JP Bold\\fs50\\fsvp10}"
 script_author = "谢耳朵w"
-script_version = "0.3"
+script_version = "0.4"
 
 re = require 'aegisub.re'
 exp = re.compile('\\\\+N+')
 exp_skip = re.compile('\\\\N{\\\\fnSource Han Sans JP Bold\\\\fs50\\\\fsvp10}')
+exp_lstrip = re.compile('^\\\\N')
+exp_rstrip = re.compile('\\\\N$')
 
 function linenum_offset(subs)
     offset = 0
@@ -21,6 +23,15 @@ function linenum_offset(subs)
     return offset
 end
 
+function replace_until_same(text, exp, newtxt)
+    local ot = text
+    repeat 
+        ot = text
+        text, _ = exp:sub(text, newtxt)
+    until ot == text
+    return text
+end
+
 function insert_sep(subs, sels, curr)
     offset = linenum_offset(subs)
     normalsels = {}
@@ -28,6 +39,9 @@ function insert_sep(subs, sels, curr)
     for _, i in ipairs(sels) do
         local line = subs[i]
         if not exp_skip:match(line.text) then
+            -- strip \N
+            line.text = replace_until_same(line.text, exp_lstrip, '')
+            line.text = replace_until_same(line.text, exp_rstrip, '')
             matches = exp:find(line.text)
             if #matches > 1 then
                 -- found multiple '\N' like
