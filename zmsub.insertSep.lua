@@ -3,16 +3,16 @@ local tr = aegisub.gettext
 script_name = tr"插入日字特效 (选中行)"
 script_description = tr"把台词中的\\N替换为\\N{\\fnSource Han Sans JP Bold\\fs50\\fsvp10}。换行符匹配[\\/]+N+形式，并删掉头尾的换行符"
 script_author = "谢耳朵w"
-script_version = "0.4.2"
+script_version = "0.4.2.001"
 
 re = require 'aegisub.re'
 exp_newline = re.compile('[\\\\/]+N+')
-exp_skip = re.compile('\\\\N{\\\\fnSource Han Sans JP Bold.*\\}')
+exp_skip = re.compile('\\\\N{\\\\fnSource Han Sans JP Bold.*?\\}')
 exp_lstrip = re.compile('^[\\\\/]+N+')
 exp_rstrip = re.compile('[\\\\/]+N+$')
 
 function linenum_offset(subs)
-    offset = 0
+    local offset = 0
     for i = 1, #subs do
         if subs[i].class ~= "dialogue" then
             offset = i
@@ -33,9 +33,9 @@ function replace_until_same(text, exp, newtxt)
 end
 
 function insert_sep(subs, sels, curr)
-    offset = linenum_offset(subs)
-    normalsels = {}
-    errsels = {}
+    local offset = linenum_offset(subs)
+    local normalsels = {}
+    local errsels = {}
     for _, i in ipairs(sels) do
         local line = subs[i]
         if not exp_skip:match(line.text) then
@@ -56,7 +56,7 @@ function insert_sep(subs, sels, curr)
             subs[i] = line
         end
     end
-    out = "Format errors:\n"
+    local out = "Format errors:\n"
     if #errsels > 0 then
         for _, i in ipairs(errsels) do
             out = out .. i-offset .. ": " .. subs[i].text .. "\n"

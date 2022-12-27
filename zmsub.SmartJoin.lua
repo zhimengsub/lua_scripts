@@ -3,19 +3,19 @@ local tr = aegisub.gettext
 script_name = tr("智能合并对话 (无空格)")
 script_description = tr("合并多行时，按\\N区分，把中文和日文分别合并至各自部分")
 script_author = "谢耳朵w"
-script_version = "0.2"
+script_version = "0.2.001"
 
 re = require 'aegisub.re'
-pat = re.compile("(.+)(\\\\N\\{\\\\fnSource Han Sans JP Bold.*\\})(.+)")
+pat = re.compile("(.+)(\\\\N\\{\\\\fnSource Han Sans JP Bold.*?\\})(.+)")
 
 function smartjoinlines(subs, sels)
-    zhs = ''
-    mid = ''
-    jps = ''
-    rm = {}
+    local zhs = ''
+    local mid = ''
+    local jps = ''
+    local rm = {}
 	for _, i in ipairs(sels) do
         if subs[i].class == "dialogue" then
-            res = pat:match(subs[i].text)
+            local res = pat:match(subs[i].text)
             zhs = zhs .. res[2]['str']
             mid = res[3]['str']
             jps = jps .. res[4]['str']
