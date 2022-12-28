@@ -3,7 +3,7 @@ local tr = aegisub.gettext
 script_name = tr("检查换行|空格换为半角|规范数字宽度 (选中行)")
 script_description = tr("检查选中行的换行符是否规范，如果不规范则设为注释；空格全部替换为半角，一句只有一位数字时替换为全角，否则所有数字替换为半角")
 script_author = "谢耳朵w"
-script_version = "0.2.001"
+script_version = "0.2.002"
 
 include("unicode.lua")
 re = require 'aegisub.re'
@@ -15,6 +15,8 @@ exp_sep = re.compile("(.+)(\\\\N\\{\\\\fnSource Han Sans JP Bold.*?\\})(.+)")
 -- exp_multi_digit = re.compile("\\d{2,}")
 exp_digit = re.compile("\\d")
 exp_tag = re.compile("(\\{[^{}]*\\})")
+exp_lstrip = re.compile("^ +")
+exp_rstrip = re.compile(" +$")
 
 to_fullwidth = {['1'] = '１', ['2'] = '２', ['3'] = '３', ['4'] = '４', ['5'] = '５',
                 ['6'] = '６', ['7'] = '７', ['8'] = '８', ['9'] = '９', ['0'] = '０'}
@@ -71,7 +73,11 @@ function process_digits(text)
     -- 日文部分
     local jps = res[4]['str']
 
+    zhs = exp_lstrip:sub(zhs, '')
+    zhs = exp_rstrip:sub(zhs, '')
     zhs = process_partial_digits(zhs)
+    jps = exp_lstrip:sub(jps, '')
+    jps = exp_rstrip:sub(jps, '')
     jps = process_partial_digits(jps)
     return zhs..sep..jps
 end
