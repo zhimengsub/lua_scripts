@@ -1,9 +1,9 @@
 local tr = aegisub.gettext
 
 script_name = tr"插入日字特效 (选中行)"
-script_description = tr"把台词中的\\N替换为\\N{\\fnSource Han Sans JP Bold\\fs50\\fsvp10}。换行符匹配[\\/]+N+形式，并删掉头尾的换行符"
+script_description = tr"把台词中的\\N替换为\\N{\\fnSource Han Sans JP Bold\\fs55\\fsvp10}。换行符匹配[\\/]+N+形式，并删掉头尾的换行符"
 script_author = "谢耳朵w"
-script_version = "0.4.2.001"
+script_version = "0.4.3"
 
 re = require 'aegisub.re'
 exp_newline = re.compile('[\\\\/]+N+')
@@ -49,7 +49,7 @@ function insert_sep(subs, sels, curr)
                 line.comment = true
             else
                 -- found only one '\N'-like
-                t = exp_newline:sub(line.text, '\\\\N{\\\\fnSource Han Sans JP Bold\\\\fs50\\\\fsvp10}')
+                t = exp_newline:sub(line.text, '\\\\N{\\\\fnSource Han Sans JP Bold\\\\fs55\\\\fsvp10}')
                 table.insert(normalsels, i)
                 line.text = t
             end
