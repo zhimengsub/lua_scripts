@@ -3,13 +3,15 @@ local tr = aegisub.gettext
 script_name = tr"插入日字特效 (选中行)"
 script_description = tr"把台词中的\\N替换为\\N{\\fnSource Han Sans JP Bold\\fs55\\fsvp10}。换行符匹配[\\/]+N+形式，并删掉头尾的换行符"
 script_author = "谢耳朵w"
-script_version = "0.4.3"
+script_version = "0.4.4"
 
 re = require 'aegisub.re'
 exp_newline = re.compile('[\\\\/]+N+')
 exp_skip = re.compile('\\\\N{\\\\fnSource Han Sans JP Bold.*?\\}')
 exp_lstrip = re.compile('^[\\\\/]+N+')
 exp_rstrip = re.compile('[\\\\/]+N+$')
+
+new_tag = '\\\\N{\\\\fnSource Han Sans JP Bold\\\\fs55\\\\fsvp10}'
 
 function linenum_offset(subs)
     local offset = 0
@@ -49,12 +51,17 @@ function insert_sep(subs, sels, curr)
                 line.comment = true
             else
                 -- found only one '\N'-like
-                t = exp_newline:sub(line.text, '\\\\N{\\\\fnSource Han Sans JP Bold\\\\fs55\\\\fsvp10}')
+                t = exp_newline:sub(line.text, new_tag)
                 table.insert(normalsels, i)
                 line.text = t
             end
-            subs[i] = line
+        else
+            -- replace old with new
+            t = exp_skip:sub(line.text, new_tag)
+            table.insert(normalsels, i)
+            line.text = t
         end
+        subs[i] = line
     end
     local out = "Format errors:\n"
     if #errsels > 0 then

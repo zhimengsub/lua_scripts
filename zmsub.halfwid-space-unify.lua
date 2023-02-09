@@ -3,13 +3,14 @@ local tr = aegisub.gettext
 script_name = tr("检查换行|空格换为半角|规范数字宽度 (选中行)")
 script_description = tr("检查选中行的换行符是否规范，如果不规范则设为注释；空格全部替换为半角，一句只有一位数字时替换为全角，否则所有数字替换为半角")
 script_author = "谢耳朵w"
-script_version = "0.2.002"
+script_version = "0.3"
 
 include("unicode.lua")
 re = require 'aegisub.re'
 
 exp_newline = re.compile("\\\\N(?=\\{\\\\fnSource Han Sans JP Bold)")
 exp_fwsp = re.compile("　+")
+exp_hwsp = re.compile(" +")
 exp_sep = re.compile("(.+)(\\\\N\\{\\\\fnSource Han Sans JP Bold.*?\\})(.+)")
 -- exp_single_digit = re.compile("(?<!\\d)\\d(?!\\d)")
 -- exp_multi_digit = re.compile("\\d{2,}")
@@ -84,6 +85,7 @@ end
 
 function replace_space(text)
     local text = exp_fwsp:sub(text, ' ')
+    local text = exp_hwsp:sub(text, ' ')
     return text
 end
 

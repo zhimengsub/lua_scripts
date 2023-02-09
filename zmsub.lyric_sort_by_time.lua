@@ -1,6 +1,6 @@
 local tr = aegisub.gettext
 
-script_name = tr("歌词排序_按时间交错")
+script_name = tr("歌词排序_按时间合并")
 script_description = tr("选中按语言聚集排序的双字台词，会把前半部分和后半部分交错在一起")
 script_author = "谢耳朵w"
 script_version = "0.1"
