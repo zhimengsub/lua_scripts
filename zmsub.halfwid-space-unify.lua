@@ -3,7 +3,7 @@ local tr = aegisub.gettext
 script_name = tr("检查换行|空格换为半角|规范数字宽度 (选中行)")
 script_description = tr("检查选中行的换行符是否规范，如果不规范则设为注释；空格全部替换为半角，一句只有一位数字时替换为全角，否则所有数字替换为半角")
 script_author = "谢耳朵w"
-script_version = "0.3"
+script_version = "0.3.001"
 
 include("unicode.lua")
 re = require 'aegisub.re'
@@ -105,20 +105,27 @@ function process_lines_selected(subtitles, selected_lines, active_line)
 		aegisub.progress.set(i * 100 / #selected_lines)
 		local l = subtitles[i]
         if subtitles[i].class == "dialogue" then
-            if not is_single_newline(l.text) then
-                l.comment = true
-                subtitles[i] = l
-                table.insert(errsels, i)
-                aegisub.debug.out(string.format('Line %d format error! "%s"\n\n', i-offset, l.text))
-            else
+            if is_single_newline(l.text) then
                 nt = replace_space(l.text)
-                nt = process_digits(nt)
-                if nt ~= l.text then
+                -- nt = process_digits(nt)
+                -- succ = true
+                succ, nt = pcall(process_digits, nt)
+                if not succ then
+                    l.comment = true
+                    subtitles[i] = l
+                    table.insert(errsels, i)
+                    aegisub.debug.out(string.format('Error processing line %d! %s\n%s\n\n', i-offset, l.text, nt))
+                elseif nt ~= l.text then
                     l.text = nt
-                    -- aegisub.debug.out(string.format('%d: "%s"\n        -> "%s"\n\n', i-offset, l.text, nt))
+                    -- aegisub.debug.out(string.format('%d: %s\n        -> %s\n\n', i-offset, l.text, nt))
                     subtitles[i] = l
                     table.insert(sels, i)
                 end
+            else
+                l.comment = true
+                subtitles[i] = l
+                table.insert(errsels, i)
+                aegisub.debug.out(string.format('Line %d format error! %s\n\n', i-offset, l.text))
             end
         end
 	end
