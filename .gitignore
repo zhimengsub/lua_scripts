@@ -1,3 +1,4 @@
 *.lua
-!zmsub*
 *.moon
+!zmsub*
+!zmsub_utils/*

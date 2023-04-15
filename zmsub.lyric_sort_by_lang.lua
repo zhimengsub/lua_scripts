@@ -1,7 +1,7 @@
 local tr = aegisub.gettext
 
-script_name = tr("歌词排序_按语言拆分")
-script_description = tr("选中按时间交错排序的双字台词，会把台词按语言聚集在一起")
+script_name = tr("织梦.歌词排序.按语言拆分")
+script_description = tr("选中按时间交错排序的双字台词，会把台词按语言拆为两块")
 script_author = "谢耳朵w"
 script_version = "0.1"
 
