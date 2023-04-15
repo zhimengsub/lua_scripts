@@ -5,7 +5,7 @@
 
 ## 安装方式
 
-将所有lua脚本、`zmsub_utils`文件夹下载后，放入`<aegisub安装目录>\automation\autoload`内，重新启动`aegisub`即可。
+将本仓库[下载](https://github.com/zhimengsub/lua_scripts/archive/refs/heads/main.zip)下来后，把所有lua脚本和`zmsub_utils`文件夹，放入`<aegisub安装目录>\automation\autoload`内，重新启动`aegisub`即可。
 
 ## 脚本功能介绍
 
