@@ -1,6 +1,6 @@
--- version 0.4.4
-
 re = require 'aegisub.re'
+require 'zmsub_utils.general'
+versions.insert_jptag = '0.4.4'
 
 exp_jptag = re.compile('\\\\N{\\\\fnSource Han Sans JP Bold.*?\\}')
 -- 增加容错性，防止校对手滑写错符号导致错误

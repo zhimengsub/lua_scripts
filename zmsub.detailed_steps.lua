@@ -72,25 +72,28 @@ end
 
 TLL_macros = {
 	{
-		script_name = "1.插入日字特效v0.4.4",
+		script_name = "1.插入日字特效",
 		script_description = "为选中的'中字\\N日字'格式插入'{\\fnSource Han Sans JP Bold\\fs55\\fsvp10}'，并删掉头尾的换行符",
 		entry = function(subs,sel) switches.insert_jptag=true proc_lines(subs, sel) end,
-		validation = false
+		validation = false,
+        version = versions.insert_jptag,
 	},
 	{
         script_name = "2.插入模糊阴影(2304)",
 		script_description = "每行开头插入'\\blur3\\yshad2.5\\xshad1.5'特效",
 		entry = function(subs,sel) switches.insert_zmsub2304_tags=true proc_lines(subs, sel) end,
-		validation = false
+		validation = false,
+        version = versions.insert_zmsub2304_tags,
 	},
     {
-        script_name = "3.规范空格、数字宽度v0.3.001",
+        script_name = "3.规范空格、数字宽度",
         script_description = "连续的全/半角空格全部替换为一个半角空格；对白只有一位数字则全角，两位以上数字全部半角。",
         entry = function(subs,sel) switches.proc_space_digits=true proc_lines(subs, sel) end,
-        validation = false
+        validation = false,
+        version = versions.proc_space_digits,
     },
 }
 
 for i = 1, #TLL_macros do
-	aegisub.register_macro(script_name.."/"..TLL_macros[i]["script_name"], TLL_macros[i]["script_description"], TLL_macros[i]["entry"], TLL_macros[i]["validation"])
+	aegisub.register_macro(script_name.."/"..TLL_macros[i].script_name.."v"..TLL_macros[i].version, TLL_macros[i].script_description, TLL_macros[i].entry, TLL_macros[i].validation)
 end

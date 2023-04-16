@@ -1,8 +1,8 @@
--- version 0.3
-
 re = require 'aegisub.re'
 require 'zmsub_utils.general'
 require 'zmsub_utils.insert_zmsub2304_tags'
+
+versions.smart_join_lines = '0.3'
 
 exp_sep_to_parts = re.compile("(.+)(\\\\N(?:\\{\\\\fnSource Han Sans JP Bold.*?\\})?)(.+)")
 exp_unique_tag = re.compile('\\\\blur3\\\\yshad2.5\\\\xshad1.5')
