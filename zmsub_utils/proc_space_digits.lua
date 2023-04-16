@@ -1,9 +1,10 @@
--- version 0.3.001
-
 include("unicode.lua")
+require 'zmsub_utils.general'
 re = require 'aegisub.re'
 
-exp_sep = re.compile("(.+)(\\\\N(?=\\{\\\\fnSource Han Sans JP Bold.*?\\}))(.+)")
+versions.proc_space_digits = '0.4'
+
+exp_sep = re.compile("(.+)(\\\\N(?:\\{\\\\fnSource Han Sans JP Bold.*?\\})?)(.+)")
 exp_sp = re.compile("[　 ]+")
 
 exp_digit = re.compile("\\d")
