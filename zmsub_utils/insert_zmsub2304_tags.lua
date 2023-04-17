@@ -1,8 +1,8 @@
 re = require 'aegisub.re'
 require 'zmsub_utils.general'
-versions.insert_zmsub2304_tags = '0.1'
+versions.insert_zmsub2304_tags = '0.1.1'
 
-exp_zmsub2304_tag = re.compile('^\\{(?:\\\\blur3\\\\yshad2.5\\\\xshad1.5)?(.+?)\\}')
+local exp_zmsub2304_tag = re.compile('^\\{(?:\\\\blur3\\\\yshad2.5\\\\xshad1.5)?(.+?)\\}')
 
 -- 每行开头插入 \\blur3\\yshad2.5\\xshad1.5
 function insert_zmsub2304_tags(line)

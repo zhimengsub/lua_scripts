@@ -2,20 +2,20 @@ include("unicode.lua")
 require 'zmsub_utils.general'
 re = require 'aegisub.re'
 
-versions.proc_space_digits = '0.4'
+versions.proc_space_digits = '0.4.1'
 
-exp_sep = re.compile("(.+)(\\\\N(?:\\{\\\\fnSource Han Sans JP Bold.*?\\})?)(.+)")
-exp_sp = re.compile("[　 ]+")
+local exp_sep = re.compile("(.*)(\\\\N(?:\\{\\\\fnSource Han Sans JP Bold.*?\\})?)(.*)")
+local exp_sp = re.compile("[　 ]+")
 
-exp_digit = re.compile("\\d")
-exp_anytag = re.compile("(\\{[^{}]*\\})")
-exp_lstrip_sp = re.compile("^ +")
-exp_rstrip_sp = re.compile(" +$")
+local exp_digit = re.compile("\\d")
+local exp_anytag = re.compile("(\\{[^{}]*\\})")
+local exp_lstrip_sp = re.compile("^ +")
+local exp_rstrip_sp = re.compile(" +$")
 
-to_fullwidth = {['1'] = '１', ['2'] = '２', ['3'] = '３', ['4'] = '４', ['5'] = '５',
-                ['6'] = '６', ['7'] = '７', ['8'] = '８', ['9'] = '９', ['0'] = '０'}
-to_halfwidth = {['１'] = '1', ['２'] = '2', ['３'] = '3', ['４'] = '4', ['５'] = '5',
-                ['６'] = '6', ['７'] = '7', ['８'] = '8', ['９'] = '9', ['０'] = '0'}
+local to_fullwidth = {['1'] = '１', ['2'] = '２', ['3'] = '３', ['4'] = '４', ['5'] = '５',
+                      ['6'] = '６', ['7'] = '７', ['8'] = '８', ['9'] = '９', ['0'] = '０'}
+local to_halfwidth = {['１'] = '1', ['２'] = '2', ['３'] = '3', ['４'] = '4', ['５'] = '5',
+                      ['６'] = '6', ['７'] = '7', ['８'] = '8', ['９'] = '9', ['０'] = '0'}
 
 -- 多个空格换为一个半角空格
 function proc_space(text)

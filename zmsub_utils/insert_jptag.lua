@@ -1,14 +1,14 @@
 re = require 'aegisub.re'
 require 'zmsub_utils.general'
-versions.insert_jptag = '0.4.4'
+versions.insert_jptag = '0.4.5'
 
-exp_jptag = re.compile('\\\\N{\\\\fnSource Han Sans JP Bold.*?\\}')
+local exp_jptag = re.compile('\\\\N{\\\\fnSource Han Sans JP Bold.*?\\}')
 -- 增加容错性，防止校对手滑写错符号导致错误
-exp_newline = re.compile('[\\\\/]+N+')
-exp_lstrip_nl = re.compile('^[\\\\/]+N+')
-exp_rstrip_nl = re.compile('[\\\\/]+N+$')
+local exp_newline = re.compile('[\\\\/]+N+')
+local exp_lstrip_nl = re.compile('^[\\\\/]+N+')
+local exp_rstrip_nl = re.compile('[\\\\/]+N+$')
 
-new_jptag = '\\\\N{\\\\fnSource Han Sans JP Bold\\\\fs55\\\\fsvp10}'
+local new_jptag = '\\\\N{\\\\fnSource Han Sans JP Bold\\\\fs55\\\\fsvp10}'
 
 function replace_until_same(text, exp, newtxt)
     local ot = text
