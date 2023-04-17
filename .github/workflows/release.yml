@@ -56,3 +56,9 @@ jobs:
       with:
         name: ${{ env.REPO_NAME }}
         path: ${{ env.REPO_NAME }}.zip
+        
+    - name: Attach artifact to release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release upload ${{ env.RELEASE_TAG }} --clobber ${{ env.REPO_NAME }}.zip
