@@ -26,22 +26,16 @@ jobs:
         sudo mv gh_${VERSION#v}_linux_amd64/bin/gh /usr/local/bin/
         rm -rf gh_${VERSION#v}_linux_amd64 gh.tar.gz
         
-    - name: Generate tag and release description
-      env:
-        DATE_TIME: ${{ steps.timestamp.outputs.timestamp }}
-      run: |
-        echo "RELEASE_TAG=${{ env.DATE_TIME }}" >> $GITHUB_ENV
-        echo "RELEASE_DESC=Release created on ${{ env.DATE_TIME }}" >> $GITHUB_ENV
-        
     - name: Create release
       env:
+        DATE_TIME: ${{ steps.timestamp.outputs.timestamp }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git tag -a ${{ env.RELEASE_TAG }} -m "${{ env.RELEASE_DESC }}"
-        git push origin ${{ env.RELEASE_TAG }}
+        git tag -a ${{ env.DATE_TIME }} -m "Release created on ${{ env.DATE_TIME }}"
+        git push origin ${{ env.DATE_TIME }}
         
     - name: Create release draft
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh release create ${{ env.RELEASE_TAG }} -t "${{ env.RELEASE_TAG }}" -n "${{ env.RELEASE_DESC }}" --draft=false --prerelease=false
+        gh release create ${{ env.DATE_TIME }} -t "${{ env.DATE_TIME }}" -n "Release created on ${{ env.DATE_TIME }}" --draft=false --prerelease=false
