@@ -15,15 +15,16 @@ jobs:
     
     - name: Set up Git
       run: |
-        git config --global user.name "Your Name"
-        git config --global user.email "your.email@example.com"
+        git config --global user.name "BarryZZJ"
+        git config --global user.email "850462618@qq.com"
         
     - name: Install GitHub CLI
       run: |
         VERSION=$(curl --silent https://github.com/cli/cli/releases/latest | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+" | head -n 1)
-        curl -L "https://github.com/cli/cli/releases/download/$VERSION/gh_${VERSION#v}_linux_amd64.tar.gz" | tar xz
+        curl -L "https://github.com/cli/cli/releases/download/$VERSION/gh_${VERSION#v}_linux_amd64.tar.gz" -o gh.tar.gz
+        tar xzf gh.tar.gz
         sudo mv gh_${VERSION#v}_linux_amd64/bin/gh /usr/local/bin/
-        rm -rf gh_${VERSION#v}_linux_amd64
+        rm -rf gh_${VERSION#v}_linux_amd64 gh.tar.gz
         
     - name: Generate tag and release description
       env:
