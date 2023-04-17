@@ -44,3 +44,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         gh release create ${{ env.RELEASE_TAG }} -t "${{ env.RELEASE_TAG }}" -n "${{ env.RELEASE_DESC }}" --draft=false --prerelease=false
+        
+    - name: Pack repository into zip file
+      run: |
+        REPO_NAME=$(basename $GITHUB_REPOSITORY)
+        zip -r $REPO_NAME.zip .
+        
+    - name: Upload zip file to release
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.REPO_NAME }}
+        path: ${{ env.REPO_NAME }}.zip
