@@ -30,9 +30,8 @@ jobs:
       env:
         DATE_TIME: ${{ steps.timestamp.outputs.timestamp }}
       run: |
-        echo "Release created on ${{ env.DATE_TIME }}"
-        echo "::set-env name=RELEASE_TAG::${{ env.DATE_TIME }}"
-        echo "::set-env name=RELEASE_DESC::Release created on ${{ env.DATE_TIME }}"
+        echo "RELEASE_TAG=${{ env.DATE_TIME }}" >> $GITHUB_ENV
+        echo "RELEASE_DESC=Release created on ${{ env.DATE_TIME }}" >> $GITHUB_ENV
         
     - name: Create release
       env:
