@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: Set up Git
+      run: |
+        git config --global user.name "Your Name"
+        git config --global user.email "your.email@example.com"
+        
+    - name: Install GitHub CLI
+      run: |
+        VERSION=$(curl --silent https://github.com/cli/cli/releases/latest | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+" | head -n 1)
+        curl -L "https://github.com/cli/cli/releases/download/$VERSION/gh_${VERSION#v}_linux_amd64.tar.gz" | tar xz
+        sudo mv gh_${VERSION#v}_linux_amd64/bin/gh /usr/local/bin/
+        rm -rf gh_${VERSION#v}_linux_amd64
+        
+    - name: Generate tag and release description
+      env:
+        DATE_TIME: ${{ steps.timestamp.outputs.timestamp }}
+      run: |
+        echo "Release created on ${{ env.DATE_TIME }}"
+        echo "::set-env name=RELEASE_TAG::${{ env.DATE_TIME }}"
+        echo "::set-env name=RELEASE_DESC::Release created on ${{ env.DATE_TIME }}"
+        
+    - name: Create release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git tag -a ${{ env.RELEASE_TAG }} -m "${{ env.RELEASE_DESC }}"
+        git push origin ${{ env.RELEASE_TAG }}
+        
+    - name: Create release draft
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release create ${{ env.RELEASE_TAG }} -t "${{ env.RELEASE_TAG }}" -n "${{ env.RELEASE_DESC }}" --draft=false --prerelease=false
