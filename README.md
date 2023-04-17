@@ -5,7 +5,7 @@
 
 ## 安装方式
 
-下载最新版本 (在[release]中下载最近日期的`zhimengsub_lua_scripts_<发布时间>.zip`)
+在[release的最新版本](https://github.com/zhimengsub/lua_scripts/releases/latest)中下载`zhimengsub_lua_scripts_<发布时间>.zip`
 
 解压后，把所有lua脚本和`zmsub_utils`文件夹放入`<aegisub安装目录>\automation\autoload`内，重新启动`aegisub`即可。
 

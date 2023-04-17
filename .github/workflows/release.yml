@@ -30,6 +30,7 @@ jobs:
       run: |
         export TZ=Asia/Shanghai
         TIMESTAMP=$(date +%Y-%m-%d_%H%M%S)
+        echo "TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
         echo "RELEASE_TAG=${TIMESTAMP}" >> $GITHUB_ENV
         echo "RELEASE_DESC=Release created on ${TIMESTAMP}" >> $GITHUB_ENV
         
