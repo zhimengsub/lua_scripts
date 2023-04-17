@@ -49,8 +49,7 @@ jobs:
         
     - name: Pack repository into zip file
       run: |
-        REPO_NAME=$(basename $GITHUB_REPOSITORY)
-        FILE_NAME=zhimengsub_$REPO_NAME_${{ env.TIMESTAMP }}
+        FILE_NAME=zhimengsub_$(basename $GITHUB_REPOSITORY)_${{ env.TIMESTAMP }}
         echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
         zip -r $FILE_NAME.zip . -x "README.md" "LICENSE" ".gitignore" ".github/*" ".git/*"
         
