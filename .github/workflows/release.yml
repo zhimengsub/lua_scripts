@@ -48,6 +48,7 @@ jobs:
     - name: Pack repository into zip file
       run: |
         REPO_NAME=$(basename $GITHUB_REPOSITORY)
+        echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
         zip -r $REPO_NAME.zip .
         
     - name: Upload zip file to release
