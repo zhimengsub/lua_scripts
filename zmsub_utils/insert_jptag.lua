@@ -1,12 +1,12 @@
 re = require 'aegisub.re'
 require 'zmsub_utils.general'
-versions.insert_jptag = '0.4.5'
+versions.insert_jptag = '0.4.6'
 
 local exp_jptag = re.compile('\\\\N{\\\\fnSource Han Sans JP Bold.*?\\}')
 -- 增加容错性，防止校对手滑写错符号导致错误
-local exp_newline = re.compile('[\\\\/]+N+')
-local exp_lstrip_nl = re.compile('^[\\\\/]+N+')
-local exp_rstrip_nl = re.compile('[\\\\/]+N+$')
+local exp_newline = re.compile('(?:[\\\\/]+N*)+')
+local exp_lstrip_nl = re.compile('^(?:[\\\\/]+N*)+')
+local exp_rstrip_nl = re.compile('(?:[\\\\/]+N*)+$')
 
 local new_jptag = '\\\\N{\\\\fnSource Han Sans JP Bold\\\\fs55\\\\fsvp10}'
 
