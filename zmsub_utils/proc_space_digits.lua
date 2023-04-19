@@ -2,28 +2,30 @@ include("unicode.lua")
 require 'zmsub_utils.general'
 re = require 'aegisub.re'
 
-versions.proc_space_digits = '0.4.1'
+versions.proc_space_digits = '0.4.2'
 
 local exp_sep = re.compile("(.*)(\\\\N(?:\\{\\\\fnSource Han Sans JP Bold.*?\\})?)(.*)")
 local exp_sp = re.compile("[　 ]+")
 
 local exp_digit = re.compile("\\d")
 local exp_anytag = re.compile("(\\{[^{}]*\\})")
-local exp_lstrip_sp = re.compile("^ +")
-local exp_rstrip_sp = re.compile(" +$")
+local exp_lstrip_sp = re.compile("^(\\{[^{}]*\\})* +")
+local exp_rstrip_sp = re.compile(" +(\\{[^{}]*\\})*$")
 
 local to_fullwidth = {['1'] = '１', ['2'] = '２', ['3'] = '３', ['4'] = '４', ['5'] = '５',
                       ['6'] = '６', ['7'] = '７', ['8'] = '８', ['9'] = '９', ['0'] = '０'}
 local to_halfwidth = {['１'] = '1', ['２'] = '2', ['３'] = '3', ['４'] = '4', ['５'] = '5',
                       ['６'] = '6', ['７'] = '7', ['８'] = '8', ['９'] = '9', ['０'] = '0'}
 
--- 多个空格换为一个半角空格
-function proc_space(text)
-    local text = exp_sp:sub(text, ' ')
+-- 去除开头结尾的多余空格；任意个全角/半角空格换为一个半角空格
+function process_space(text)
+    text = exp_sp:sub(text, ' ')
+    text = exp_lstrip_sp:sub(text, '$1')
+    text = exp_rstrip_sp:sub(text, '$1')
     return text
 end
 
--- 处理对白中的数字，只有一位数字则全角，两位以上数字全部半角
+-- 处理对白中的数字，只有一个数字则全角，出现两个以上数字全部半角
 function process_partial_digits(text)
     local in_tags = false
     local res_hw = ""
@@ -53,8 +55,8 @@ function process_partial_digits(text)
     return res_fw
 end
 
--- 处理对白中的数字，中文和日文分开处理
-function process_digits(text)
+-- 处理对白中的数字、空格，中文和日文分开处理
+function process_text(text)
     local res = exp_sep:match(text)
     if not res or #res ~= 4 then
         return ''
@@ -66,11 +68,9 @@ function process_digits(text)
     -- 日文部分
     local jps = res[4]['str']
 
-    zhs = exp_lstrip_sp:sub(zhs, '')
-    zhs = exp_rstrip_sp:sub(zhs, '')
+    zhs = process_space(zhs)
     zhs = process_partial_digits(zhs)
-    jps = exp_lstrip_sp:sub(jps, '')
-    jps = exp_rstrip_sp:sub(jps, '')
+    jps = process_space(jps)
     jps = process_partial_digits(jps)
     return zhs..sep..jps
 end
@@ -82,8 +82,7 @@ function proc_space_digits(line)
     if not matches or #matches>1 then
         return false
     else
-        local nt = proc_space(line.text)
-        nt = process_digits(nt)
+        local nt = process_text(line.text)
         -- pcall == try catch
         -- succ, nt = pcall(process_digits, nt)
         if nt == '' then
