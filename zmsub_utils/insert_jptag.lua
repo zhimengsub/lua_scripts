@@ -3,8 +3,10 @@ require 'zmsub_utils.general'
 versions.insert_jptag = '0.4.6'
 
 local exp_jptag = re.compile('\\\\N{\\\\fnSource Han Sans JP Bold.*?\\}')
+local exp_starttag = re.compile('^\\{[^}]*\\}')
+local exp_endtag = re.compile('\\{[^}]*\\}$')
 -- 增加容错性，防止校对手滑写错符号导致错误
-local exp_newline = re.compile('(?:[\\\\/]+N*)+')
+local exp_newline = re.compile('(?:[\\\\/]+N+)+')
 local exp_lstrip_nl = re.compile('^(?:[\\\\/]+N*)+')
 local exp_rstrip_nl = re.compile('(?:[\\\\/]+N*)+$')
 
@@ -27,6 +29,21 @@ function insert_jptag(line)
         return true
     else
         -- 不存在特效，在\N后添加特效标签
+
+        -- 去除开头和结尾的特效标签避免影响判断
+        local mStarttag = exp_starttag:match(line.text)
+        local starttag = ''
+        if mStarttag then
+            starttag = mStarttag[1]['str']
+            line.text, _ = exp_starttag:sub(line.text, '')
+        end
+        local mEndtag = exp_endtag:match(line.text)
+        local endtag = ''
+        if mEndtag then
+            endtag = mEndtag[1]['str']
+            line.text, _ = exp_endtag:sub(line.text, '')
+        end
+
         -- 去除开头和结尾多余的\N
         line.text = replace_until_same(line.text, exp_lstrip_nl, '')
         line.text = replace_until_same(line.text, exp_rstrip_nl, '')
@@ -39,6 +56,9 @@ function insert_jptag(line)
         else
             -- 只有一个\N，替换为新特效标签
             line.text = exp_newline:sub(line.text, new_jptag)
+
+            -- 添加回开头和结尾的特效标签
+            line.text = starttag .. line.text .. endtag
             return true
         end
     end

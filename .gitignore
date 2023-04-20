@@ -2,3 +2,4 @@
 *.moon
 !zmsub*
 !zmsub_utils/*
+.idea/
