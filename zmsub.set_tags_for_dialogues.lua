@@ -30,11 +30,13 @@ function proc_lines(subs, sels, curr)
             -- 添加2304版对白特效
             insert_zmsub2304_tags(line) and
             -- 规范空格、数字宽度
-               proc_space_digits(line)
+               proc_space_digits(line) 
             then
                 -- 全部成功
-                subs[i] = line
-                table.insert(normalsels, i)
+                if line.text ~= subs[i].text then
+                    subs[i] = line
+                    table.insert(normalsels, i)
+                end
             else
                 -- 有某一个失败
                 oline.comment = true
