@@ -1,8 +1,8 @@
 local tr = aegisub.gettext
-script_name = tr("织梦.对白处理.拆解步骤")
-script_description = tr("允许你分开运行'织梦.对白处理'里的特定步骤")
+script_name = tr("织梦.添加对白特效(2304).拆解步骤")
+script_description = tr("允许你分步骤执行'织梦.添加对白特效(2304)'，一般用不到")
 script_author = "谢耳朵w"
-script_version = "0.1"
+script_version = "0.1.1"
 
 re = require 'aegisub.re'
 require 'zmsub_utils.general'
@@ -80,20 +80,20 @@ TLL_macros = {
 		validation = false,
         version = versions.insert_jptag,
 	},
-	{
-        script_name = "2.插入模糊阴影(2304)",
-		script_description = "每行开头插入'\\blur3\\yshad2.5\\xshad1.5'特效",
-		entry = function(subs,sel) switches.insert_zmsub2304_tags=true return proc_lines(subs, sel) end,
-		validation = false,
-        version = versions.insert_zmsub2304_tags,
-	},
     {
-        script_name = "3.规范空格、数字宽度",
+        script_name = "2.规范空格、数字宽度",
         script_description = "连续的全/半角空格全部替换为一个半角空格；对白只有一位数字则全角，两位以上数字全部半角。",
         entry = function(subs,sel) switches.proc_space_digits=true return proc_lines(subs, sel) end,
         validation = false,
         version = versions.proc_space_digits,
     },
+	{
+        script_name = "3.插入模糊阴影(2304)",
+		script_description = "每行开头插入'\\blur3\\yshad2.5\\xshad1.5'特效",
+		entry = function(subs,sel) switches.insert_zmsub2304_tags=true return proc_lines(subs, sel) end,
+		validation = false,
+        version = versions.insert_zmsub2304_tags,
+	},
 }
 
 for i = 1, #TLL_macros do
