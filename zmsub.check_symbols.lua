@@ -3,7 +3,7 @@ local tr = aegisub.gettext
 script_name = tr"织梦.检查中日符号一致性 (所有行)"
 script_description = tr"检查中字和日字部分的符号是否一致。目前检查的符号有…，。？！,.!、「」『』【】"
 script_author = "谢耳朵w"
-script_version = "0.1"
+script_version = "0.2"
 
 re = require 'aegisub.re'
 require 'zmsub_utils.general'
@@ -45,6 +45,7 @@ function proc_lines(subs, sels, curr)
     -- 记录正常和异常的编号，用于显示处理结果
     local normalsels = {}
     local errsels = {}
+    local skipsels = {}
     for i = 1, #subs do
 		aegisub.progress.set(i * 100 / #subs)
         if subs[i].class == "dialogue" then
@@ -61,9 +62,10 @@ function proc_lines(subs, sels, curr)
             -- 拆分中日字
             local res = exp_sep:match(line.text)
             if not res or #res ~= 4 then
-                aegisub.debug.out('格式错误，无法检查：')
-                aegisub.debug.out(i-offset .. ": " .. line.text .. "\n")
-                return {i}
+                -- 格式不规范，如果没有注释就记录下来
+                if not line.comment then
+                    table.insert(skipsels, i)
+                end
             else
                 local tleft = res[2]['str']
                 local tright = res[4]['str']
@@ -71,7 +73,6 @@ function proc_lines(subs, sels, curr)
                 -- 检查中日字符号是否一致
                 if not check_symbol_consistency(tleft, tright) then
                     -- 不一致则注释并选中
-                    aegisub.debug.out(i-offset .. ": " .. line.text .. "\n")
                     oline.comment = true
                     subs[i] = oline
                     table.insert(errsels, i)
@@ -84,8 +85,18 @@ function proc_lines(subs, sels, curr)
     end
     aegisub.set_undo_point(script_name)
     
+    if #skipsels > 0 then
+        for _, i in ipairs(skipsels) do
+            aegisub.debug.out(i-offset .. ": " .. subs[i].text .. "\n")
+        end
+        aegisub.debug.out('\n以上行格式错误，跳过检查\n=============================\n')
+    end
+
     -- 提示哪些行处理错误，注释并选中这些行
     if #errsels > 0 then
+        for _, i in ipairs(errsels) do
+            aegisub.debug.out(i-offset .. ": " .. subs[i].text .. "\n")
+        end
         aegisub.debug.out('\n以上对白的符号不一致，将被选中并注释！')
         return errsels
     else
